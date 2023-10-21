@@ -1,0 +1,88 @@
+esphome:
+  name: "esp82-bc-ff-4d-cf-a7-a0"
+
+esp8266:
+  board: nodemcuv2
+
+preferences:
+  flash_write_interval: 1min
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "uEKkDfX2JXNElNbgEp6C/A/lxlRxCb5Yqm5ZoAYIcJI="
+
+ota:
+  password: "08e0290cee94b3bf3e96cfd611e367ff"
+
+wifi:
+  ssid: "OpenWrt"
+  password: "noseyque"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esp-02 Fallback Hotspot"
+    password: "fgbqOXfA371X"
+
+captive_portal:
+
+mqtt:
+  broker: 192.168.0.211
+  username: mosquitto
+  password: mosquitto
+
+web_server:
+  port: 80
+  version: 2
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: D2
+      inverted: true
+      mode:
+        input: true
+        pullup: true
+    name: "GPIO4_input"
+
+switch:
+  - platform: gpio
+    pin: 12
+    name: "GPIO12"
+
+  - platform: gpio
+    pin: 13
+    name: "GPIO13"
+
+  - platform: gpio
+    pin: 14
+    name: "GPIO14"
+
+  - platform: gpio
+    pin: 15
+    name: "GPIO15"
+    
+output:
+  - platform: esp8266_pwm
+    pin: D1
+    id: pwm_GPIO5
+  - platform: template
+    id: pwm_freq_GPIO5
+    type: float
+    write_action:
+      lambda: |-
+        int newFreq = (int)(10000000.0*state)+1000;
+        id(pwm_GPIO5).update_frequency(newFreq);
+    
+light:
+  - platform: monochromatic
+    gamma_correct: 1.0
+    output: pwm_GPIO5
+    name: "PWM_GPIO5"
+  - platform: monochromatic
+    gamma_correct: 1.0
+    output: pwm_freq_GPIO5
+    name: "PWM Freq_GPIO5"   

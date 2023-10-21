@@ -1,0 +1,407 @@
+Esubstitutions:
+  friendly_name: CONTROL ESP32
+
+esphome:
+  name: esp32-e0-5a-1b-41-c4-54
+ #mac_address:
+  #    name: $friendly_name MAC
+
+  # on_boot:
+  #   priority: -100
+  #   then: 
+  #     lambda: |-
+  #       // delay(10000);
+  #       ESP_LOGI("main", "!!!!!! kp from boot %f", id("console_fan_kp") );
+  #       id(console_thermostat).set_kp( id("$friendly_name kp") );
+
+# Throttle writing parameters to the internal flash memory to reduce ESP memory wear / degradation
+preferences:
+  flash_write_interval: 15min
+
+ 
+#########################
+# ESP32 AND NETWORK SETUP
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "YFfJYNy9MxiVB4i2xFERuPfrxExmH0xBq2DVF7HTs4I="
+
+ota:
+  password: "2f92a8d7d1169f5d2fad4535d6675bd2"
+
+wifi:
+  ssid: "OpenWrt"
+  password: "noseyque"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "esp32 Fallback Hotspot"
+    password: "uD7lJHa5fbVT"
+
+
+captive_portal:
+
+mqtt:
+  broker: 192.168.0.211
+  username: mosquitto
+  password: mosquitto
+
+web_server:
+  port: 80
+  version: 2
+
+i2c:
+  sda: 21
+  scl: 22
+  scan: true
+  id: bus_a
+
+# pid climate log update is noisy, dial it back to warn
+logger:
+  level: DEBUG
+  logs: 
+    climate: ERROR
+    bme280: WARN
+
+number:
+
+  ## OPTIONAL:
+  # RECEIVE KP, KI and KD parameters from input_text.kx helpers in 
+  # Home Assistant. See the PID controller below
+  # These helper values will get saved to flash thus permanently over-riding 
+  # the initial values set in the PID below.
+
+  # KP
+  - platform: template
+    name: kp
+    icon: mdi:chart-bell-curve
+    restore_value: true
+    initial_value: 1.453
+    min_value: 0
+    max_value: 10
+    step: 0.001
+    set_action: 
+      lambda: |- 
+        id(console_thermostat).set_kp( x );
+
+  # KI
+  - platform: template
+    name: ki
+    icon: mdi:chart-bell-curve
+    restore_value: true
+    initial_value: 0.021
+    min_value: 0
+    max_value: 1
+    step: 0.0001
+    set_action: 
+      lambda: id(console_thermostat).set_ki( x );
+
+  # KD
+  - platform: template
+    name: kd
+    icon: mdi:chart-bell-curve
+    restore_value: true
+    initial_value: 24.439
+    min_value: 0
+    max_value: 30
+    step: 0.001
+    set_action: 
+      lambda: id(console_thermostat).set_kd( x );
+
+  # Set threshold low
+  - platform: template
+    name: Deadband Threshold Low
+    icon: mdi:chart-bell-curve
+    restore_value: true
+    initial_value: -0.1
+    min_value: -2
+    max_value: 0
+    step: 0.1
+    set_action: 
+      lambda: id(console_thermostat).set_threshold_low( x );
+
+  # Set threshold high
+  - platform: template
+    name: Deadband Threshold High
+    icon: mdi:chart-bell-curve
+    restore_value: true
+    initial_value: 0.1
+    min_value: 0
+    max_value: 2
+    step: 0.1
+    set_action: 
+      lambda: id(console_thermostat).set_threshold_high( x );
+
+  # Set ki multiplier
+  - platform: template
+    name: Deadband ki Multiplier
+    icon: mdi:chart-bell-curve
+    restore_value: true
+    initial_value: 0.01
+    min_value: 0
+    max_value: .2
+    step: 0.01
+    set_action: 
+      lambda: id(console_thermostat).set_ki_multiplier( x );
+
+text_sensor:
+
+  # Send wifi info
+  - platform: wifi_info
+    ip_address:
+      name: $friendly_name IP
+    ssid:
+      name: $friendly_name SSID
+    bssid:
+      name: $friendly_name BSSID
+    mac_address:
+      name: $friendly_name MAC
+#  - platform: mqtt_subscribe
+#    name: "Data from topic"
+#    id: mysensor
+#    topic: the/topic
+
+  # Send Uptime in raw seconds
+  - platform: template
+    name: $friendly_name Uptime
+    id: uptime_human
+    icon: mdi:clock-start
+
+sensor:
+
+  # Send WiFi signal strength & uptime to HA
+  - platform: wifi_signal
+    name: $friendly_name WiFi Strength
+    update_interval: 60s
+
+  # This is a bit of overkill. It sends a human readable 
+  # uptime string 1h 41m 32s instead of 6092 seconds
+  - platform: uptime
+    name: $friendly_name Uptime
+    id: uptime_sensor
+    update_interval: 60s
+    on_raw_value:
+      then:
+        - text_sensor.template.publish:
+            id: uptime_human
+            # Custom C++ code to generate the result
+            state: !lambda |-
+              int seconds = round(id(uptime_sensor).raw_state);
+              int days = seconds / (24 * 3600);
+              seconds = seconds % (24 * 3600);
+              int hours = seconds / 3600;
+              seconds = seconds % 3600;
+              int minutes = seconds /  60;
+              seconds = seconds % 60;
+              return (
+                (days ? to_string(days) + "d " : "") +
+                (hours ? to_string(hours) + "h " : "") +
+                (minutes ? to_string(minutes) + "m " : "") +
+                (to_string(seconds) + "s")
+              ).c_str();
+
+  # Read the Tacho PIN and show measured RPM as a sensor (only with 4-pin PWM fans!)
+
+  - platform: pulse_counter
+    pin: 
+      number: GPIO25   # Connect to any input PIN on the ESP
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan_speed
+    name: $friendly_name Fan Speed
+    accuracy_decimals: 0
+    filters:
+      - multiply: 0.5  # Depending on how many pulses the fan sends per round - should be 0.5 or 1 - try...
+
+
+########################################################
+# START THE FAN CONTROLLER SETUP
+
+  - platform: template
+    name: $friendly_name p term
+    id: p_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+
+  - platform: template
+    name: $friendly_name i term
+    id: i_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+
+  - platform: template
+    name: $friendly_name d term
+    id: d_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+
+  - platform: template
+    name: $friendly_name output value
+    unit_of_measurement: "%"
+    id: o_term
+    accuracy_decimals: 2
+
+  - platform: template
+    name: $friendly_name error value
+    id: e_term
+    accuracy_decimals: 2
+
+  - platform: template
+    name: $friendly_name is in deadband
+    id: in_deadband_term
+    accuracy_decimals: 0
+
+  # GET TEMP/HUMIDITY FROM DHT11
+  - platform: bme280
+    address: 0x76
+    temperature:
+      name: "Temperature"
+      oversampling: 16x
+      id: console_fan_temperature
+      accuracy_decimals: 4
+
+      # If you don't smooth the output readings 
+      # the PID controller over reacts to small changes.
+      filters:
+        # - sliding_window_moving_average:
+        #     window_size: 6
+        #     send_every: 1
+        #     send_first_at: 1
+         - exponential_moving_average:  
+             alpha: 0.1
+             send_every: 1
+
+    pressure:
+      name: "Pressure"
+
+    humidity:
+      name: "Humidity"
+      id: console_fan_humidity  
+
+    # the DHT11 can only be read every 1s. Use 1.3s to be safe.
+    update_interval: 1s
+
+  # Take the "COOL" value of the pid and send 
+  # it to the frontend to graph the output voltage
+  - platform: pid
+    name: "Fan Speed (PWM Voltage)"
+    climate_id: console_thermostat
+    type: COOL
+
+output:
+  # Wire this pin (15) into the PWM pin of your 12v fan
+  # ledc is the name of the pwm output system on an esp32
+  - platform: ledc
+    id: console_fan_speed
+    pin: 23
+
+    # 25KHz is standard PC fan frequency, minimises buzzing
+    frequency: "25000 Hz" 
+
+    # my fans stop working below 13% powerful.
+    # also they're  powerful and loud, cap their max speed to 80%
+    min_power: 0%
+    max_power: 100%
+
+# Good for debugging, you can manually set the fan 
+# speed. Just make sure the Climate device is set to off or it will keep getting overridden.
+# fan:
+#   - platform: speed
+#     output: console_fan_speed
+#     name: "Console Fan Speed"
+
+# Expose a PID-controlled Thermostat
+# Manual: https://esphome.io/components/climate/pid.html
+climate:
+  - platform: pid
+    name: "Console Fan Thermostat"
+    id: console_thermostat
+    sensor: console_fan_temperature
+
+    # It is summer right now, so 30c is a decent target.
+    default_target_temperature: 27.7°C
+    cool_output: console_fan_speed
+
+    # ON state change, publish the values to the x_term numbers defined 
+    # above, so that they can be viewed in HA
+    on_state:
+      - sensor.template.publish:
+          id: p_term
+          state: !lambda 'return -id(console_thermostat).get_proportional_term() * 100.0;'
+      - sensor.template.publish:
+          id: i_term
+          state: !lambda 'return -id(console_thermostat).get_integral_term()* 100.0;'
+      - sensor.template.publish:
+          id: d_term
+          state: !lambda 'return -id(console_thermostat).get_derivative_term()* 100.0;'
+      - sensor.template.publish:
+          id: o_term
+          state: !lambda 'return -id(console_thermostat).get_output_value()* 100.0;'
+      - sensor.template.publish:
+          id: in_deadband_term
+          state: !lambda 'return id(console_thermostat).in_deadband();'
+      - sensor.template.publish:
+          id: e_term
+          state: !lambda 'return -id(console_thermostat).get_error_value();'
+        
+    # The extents of the HA Thermostat
+    visual:
+      min_temperature: 20 °C
+      max_temperature: 50 °C
+  
+    # See the README for setting up these parameters.
+    # These are over ridden by the number templates above.
+    control_parameters:
+      kp: 1.453
+      ki: 0.021
+      kd: 24.439
+      max_integral: 0.1
+      output_averaging_samples: 1
+      derivative_averaging_samples: 5
+
+    # How to behave when close to the target temperature?
+    deadband_parameters:
+      threshold_high: 0.05°C
+      threshold_low: -0.05°C
+      kp_multiplier: 0.04
+      ki_multiplier: 0.04
+      kd_multiplier: 0.04
+      deadband_output_averaging_samples: 15
+
+switch:
+  # Expose an ESP32 restart button to HA
+  - platform: restart
+    name: ${friendly_name} ESP32 Restart
+    id: console_fan_restart
+
+# Restart every day at 12:30am. 
+# I've had some memory issues lockup 
+# the device after a couple weeks
+time:
+  - platform: homeassistant
+    on_time:
+      # Every morning at 12:30am
+    - seconds: 0
+      minutes: 30
+      hours: 0
+      then:
+       - switch.turn_on: console_fan_restart
+
+
+# I was able to find good KP,KI,KD values manually, per the instructions,
+# but you can try pressing the autotune button from home assistant and copying the 
+# values it produces. 
+# See more at: https://esphome.io/components/climate/pid.html#climate-pid-autotune-action
+button:
+- platform: template
+  name: "PID Climate Autotune"
+  on_press:
+    - climate.pid.autotune: console_thermostat
+    

@@ -1,0 +1,152 @@
+esphome:
+  name: "esp32-94-b5-55-2d-35-50"
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "MpcjNSgkC7RkMSMtwuMvIkCDNB45P+YA22JYLheOQEw="
+
+ota:
+  password: "99d7cd1d911e048335b125408ed2f434"
+
+wifi:
+  ssid: "OpenWrt"
+  password: "noseyque"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esp-01 Fallback Hotspot"
+    password: "p09SWy5njhQY"
+
+
+captive_portal:
+
+mqtt:
+  broker: 192.168.0.211
+  username: mosquitto
+  password: mosquitto
+
+web_server:
+  port: 80
+  version: 2
+
+i2c:
+  sda: 21
+  scl: 22
+  scan: true
+  id: bus_a
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: ESP IP Address
+    ssid:
+      name: ESP Connected SSID
+    bssid:
+      name: ESP Connected BSSID
+    mac_address:
+      name: ESP Mac Wifi Address
+#  - platform: mqtt_subscribe
+#    name: "Data from topic"
+#    id: mysensor
+#    topic: the/topic
+
+
+sensor:
+  - platform: bme280
+    temperature:
+      name: "BME280 Temperature"
+      oversampling: 16x
+    pressure:
+      name: "BME280 Pressure"
+    humidity:
+      name: "BME280 Humidity"
+    address: 0x76
+    update_interval: 1s
+
+
+switch:
+
+  - platform: gpio
+    pin: 14
+    name: "GPIO14"
+
+  - platform: gpio
+    pin: 12
+    name: "GPIO12"
+
+  - platform: gpio
+    pin: 13
+    name: "GPIO13"
+
+    
+output:
+  - platform: ledc
+    pin: GPIO27
+    id: pwm_GPIO27
+  - platform: template
+    id: pwm_freq_GPIO27
+    type: float
+    write_action:
+      lambda: |-
+        int newFreq = (int)(10000000.0*state)+1000;
+        id(pwm_GPIO27).update_frequency(newFreq);
+
+  - platform: ledc
+    pin: GPIO26
+    id: pwm_GPIO26
+  - platform: template
+    id: pwm_freq_GPIO26
+    type: float
+    write_action:
+      lambda: |-
+        int newFreq = (int)(10000000.0*state)+1000;
+        id(pwm_GPIO26).update_frequency(newFreq);
+
+  - platform: ledc
+    pin: GPIO25
+    id: pwm_GPIO25
+  - platform: template
+    id: pwm_freq_GPIO25
+    type: float
+    write_action:
+      lambda: |-
+        int newFreq = (int)(10000000.0*state)+1000;
+        id(pwm_GPIO25).update_frequency(newFreq);
+    
+light:
+
+  - platform: monochromatic
+    gamma_correct: 1.0
+    output: pwm_GPIO27
+    name: "PWM_GPIO27"
+  - platform: monochromatic
+    gamma_correct: 1.0
+    output: pwm_freq_GPIO27
+    name: "PWM Freq_GPIO27"
+
+  - platform: monochromatic
+    gamma_correct: 1.0
+    output: pwm_GPIO26
+    name: "PWM_GPIO26"
+  - platform: monochromatic
+    gamma_correct: 1.0
+    output: pwm_freq_GPIO26
+    name: "PWM Freq_GPIO26" 
+  
+  - platform: monochromatic
+    gamma_correct: 1.0
+    output: pwm_GPIO25
+    name: "PWM_GPIO25"
+  - platform: monochromatic
+    gamma_correct: 1.0
+    output: pwm_freq_GPIO25
+    name: "PWM Freq_GPIO25"

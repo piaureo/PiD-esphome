@@ -1,0 +1,317 @@
+substitutions:
+  friendly_name: Console Fan
+
+esphome:
+  name: esp32-30-ae-a4-03-34-64
+
+  # on_boot:
+  #   priority: -100
+  #   then: 
+  #     lambda: |-
+  #       // delay(10000);
+  #       ESP_LOGI("main", "!!!!!! kp from boot %f", id("console_fan_kp") );
+  #       id(console_thermostat).set_kp( id("$friendly_name kp") );
+
+globals:
+  - id: dhttemp
+    type: float
+    restore_value: yes
+    initial_value: '0'
+ 
+#########################
+# ESP32 AND NETWORK SETUP
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "h3ryN9Old1M2quQFwTX4AcyisyhkXK4u6/FQa6cEDDc="
+
+ota:
+  password: "7b2cc0cb5f74d9ad84c1b0bf1c5f5cbe"
+
+wifi:
+  ssid: "OpenWrt"
+  password: "noseyque"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esp-01 Fallback Hotspot"
+    password: "uNGnoaTqK8T2"
+
+
+captive_portal:
+
+mqtt:
+  broker: 192.168.0.211
+  username: mosquitto
+  password: mosquitto
+
+web_server:
+  port: 80
+  version: 2
+
+i2c:
+  sda: 21
+  scl: 22
+  scan: true
+  id: bus_a
+
+# pid climate log update is noisy, dial it back to warn
+logger:
+  level: DEBUG
+  logs: 
+    climate: ERROR
+    dht: WARN
+
+number:
+
+  ## RECEIVE kp,ki and kd parameters from input_text.kx helpers in 
+  # Home Assistant. See the PID controller below
+  # These helper values will get saved to flash thus permanently over-riding 
+  # the initial values set in the PID below.
+
+  # KP
+  - platform: template
+    name: $friendly_name kp
+    icon: mdi:chart-bell-curve
+    restore_value: true
+    min_value: 0
+    max_value: 50
+    step: 0.001
+    set_action: 
+      lambda: |- 
+        // ESP_LOGI("main", "!!!!!! kp from boot %d", id("console_fan_kp") );
+        // id(console_thermostat).set_kp( id("$friendly_name kp") );
+        id(console_thermostat).set_kp( x );
+
+  # KI
+  - platform: template
+    name: $friendly_name ki
+    icon: mdi:chart-bell-curve
+    restore_value: true
+    min_value: 0
+    max_value: 50
+    step: 0.0001
+    set_action: 
+      lambda: id(console_thermostat).set_ki( x );
+
+  # KD
+  - platform: template
+    name: $friendly_name kd
+    icon: mdi:chart-bell-curve
+    restore_value: true
+    min_value: -50
+    max_value: 50
+    step: 0.001
+    set_action: 
+      lambda: id(console_thermostat).set_kd( x );
+
+
+text_sensor:
+
+  # Send IP Address
+  - platform: wifi_info
+    ip_address:
+      name: $friendly_name IP Address
+
+  # Send Uptime in raw seconds
+  - platform: template
+    name: $friendly_name Uptime
+    id: uptime_human
+    icon: mdi:clock-start
+
+sensor:
+
+  # Send WiFi signal strength & uptime to HA
+  - platform: wifi_signal
+    name: $friendly_name WiFi Strength
+    update_interval: 60s
+
+  # This is a bit of overkill. It sends a human readable 
+  # uptime string
+  # 1h 41m 32s instead of 6092 seconds
+  - platform: uptime
+    name: $friendly_name Uptime
+    id: uptime_sensor
+    update_interval: 60s
+    on_raw_value:
+      then:
+        - text_sensor.template.publish:
+            id: uptime_human
+            # Custom C++ code to generate the result
+            state: !lambda |-
+              int seconds = round(id(uptime_sensor).raw_state);
+              int days = seconds / (24 * 3600);
+              seconds = seconds % (24 * 3600);
+              int hours = seconds / 3600;
+              seconds = seconds % 3600;
+              int minutes = seconds /  60;
+              seconds = seconds % 60;
+              return (
+                (days ? to_string(days) + "d " : "") +
+                (hours ? to_string(hours) + "h " : "") +
+                (minutes ? to_string(minutes) + "m " : "") +
+                (to_string(seconds) + "s")
+              ).c_str();
+
+########################################################
+# START THE FAN CONTROLLER SETUP
+
+  - platform: template
+    name: $friendly_name p term
+    id: p_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+
+  - platform: template
+    name: $friendly_name i term
+    id: i_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+
+  - platform: template
+    name: $friendly_name d term
+    id: d_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+
+  - platform: template
+    name: $friendly_name output value
+    unit_of_measurement: "%"
+    id: o_term
+    accuracy_decimals: 2
+
+  - platform: template
+    name: $friendly_name error value
+    id: e_term
+    accuracy_decimals: 2
+
+  - platform: template
+    name: $friendly_name zero 
+    id: zero_value
+    update_interval: 60s
+    lambda: |-
+      return 0;
+
+  - platform: template
+    name: $friendly_name zero percent
+    unit_of_measurement: "%"
+    id: zero_value_percent
+    update_interval: 60s
+    lambda: |-
+      return 0;
+
+  # GET TEMP/HUMIDITY FROM DHT11
+  - platform: dht
+    pin: GPIO4
+    temperature:
+      name: "Temperature"
+      id: console_fan_temperature
+      accuracy_decimals: 3
+
+      # If you don't smooth the output readings 
+      # the PID controller over reacts to small changes.
+      filters:
+        # - sliding_window_moving_average:
+        #     window_size: 6
+        #     send_every: 1
+        #     send_first_at: 1
+         - exponential_moving_average:  
+             alpha: 0.1
+             send_every: 1
+
+    humidity:
+      name: "Humidity"
+      id: console_fan_humidity
+
+    # the DHT11 can only be read every 1s. Use 1.3s to be safe.
+    # Note that 15 x 1.3s means that the true temperature may 
+    # take 19.5s to emerge
+    update_interval: 1.3s
+
+  # Take the "COOL" value of the pid and send 
+  # it to the frontend to graph the output voltage
+  - platform: pid
+    name: "Fan Speed (PWM Voltage)"
+    climate_id: console_thermostat
+    type: COOL
+
+output:
+  # Wire this pin (15) into the PWM pin of your 12v fan
+  # ledc is the name of the pwm output system on an esp32
+  - platform: ledc
+    id: console_fan_speed
+    pin: 15
+
+    # 25KHz is standard PC fan frequency, minimises buzzing
+    frequency: "25000 Hz" 
+
+    # my fans stop working below 13% powerful.
+    # also they're  powerful and loud, cap their max speed to 80%
+    min_power: 13%
+    max_power: 80%
+
+# Good for debugging, you can manually set the fan speed.
+fan:
+  - platform: speed
+    output: console_fan_speed
+    name: "Console Fan Speed"
+
+# Expose a PID-controlled Thermostat
+# Manual: https://esphome.io/components/climate/pid.html
+climate:
+  - platform: pid
+    name: "Console Fan Thermostat"
+    id: console_thermostat
+    sensor: console_fan_temperature
+
+    # It is summer right now, so 30c is a decent target.
+    default_target_temperature: 30°C
+    cool_output: console_fan_speed
+
+    on_state:
+      - sensor.template.publish:
+          id: p_term
+          state: !lambda 'return -id(console_thermostat).get_proportional_term() * 100.0;'
+      - sensor.template.publish:
+          id: i_term
+          state: !lambda 'return -id(console_thermostat).get_integral_term()* 100.0;'
+      - sensor.template.publish:
+          id: d_term
+          state: !lambda 'return -id(console_thermostat).get_derivative_term()* 100.0;'
+      - sensor.template.publish:
+          id: o_term
+          state: !lambda 'return -id(console_thermostat).get_output_value()* 100.0;'
+      - sensor.template.publish:
+          id: e_term
+          state: !lambda 'return -id(console_thermostat).get_error_value();'
+        
+    # dummy heater. enable this if using autotune
+    # heat_output: console_heat_speed
+
+    # The extents of the HA Thermostat
+    visual:
+      min_temperature: 20 °C
+      max_temperature: 50 °C
+  
+    # See the README for setting up these parameters.
+    # These are over ridden by the number templates above.
+    control_parameters:
+      kp: 0.15
+      ki: 0.004
+      kd: 0.5
+      max_integral: 0.0
+
+
+  
+
+switch:
+  # Expose an ESP32 restart button to HA
+  - platform: restart
+    name: "Console Fan ESP32 Restart"

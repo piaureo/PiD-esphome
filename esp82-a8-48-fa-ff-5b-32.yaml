@@ -1,0 +1,91 @@
+esphome:
+  name: "esp82-a8-48-fa-ff-5b-32"
+
+esp8266:
+  board: nodemcuv2
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "8HnHTpbeVV/hVwIVy+3Ov8xAXXWxX+TpGKZaikRzukA="
+
+ota:
+  password: "3de7ca9351af45b077c6f5fb3220b510"
+
+wifi:
+  ssid: "OpenWrt"
+  password: "noseyque"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esp-02 Fallback Hotspot"
+    password: "Y9wctETMHVWs"
+
+captive_portal:
+
+mqtt:
+  broker: 192.168.0.211
+  username: mosquitto
+  password: mosquitto
+
+web_server:
+  port: 80
+  version: 2
+
+dallas:
+  - pin: GPIO0
+    update_interval: 1s
+
+# Individual sensors
+#sensor:
+#  - platform: dallas
+#    address: 0x1c0000031edd2a28
+#    name: "Livingroom Temperature"1
+
+sensor:
+  - platform: dallas
+    address: 0xfc031664a879ff28
+    name: "Temperature #1"
+
+
+switch:
+  - platform: gpio
+    pin: 12
+    name: "GPIO12"
+
+  - platform: gpio
+    pin: 13
+    name: "GPIO13"
+
+  - platform: gpio
+    pin: 14
+    name: "GPIO14"
+
+  - platform: gpio
+    pin: 15
+    name: "GPIO15"
+    
+output:
+  - platform: esp8266_pwm
+    pin: D4
+    id: pwm_GPIO2
+  - platform: template
+    id: pwm_freq
+    type: float
+    write_action:
+      lambda: |-
+        int newFreq = (int)(10000000.0*state)+1000;
+        id(pwm_GPIO2).update_frequency(newFreq);
+    
+light:
+  - platform: monochromatic
+    gamma_correct: 1.0
+    output: pwm_GPIO2
+    name: "PWM_GPIO2"
+  - platform: monochromatic
+    gamma_correct: 1.0
+    output: pwm_freq
+    name: "PWM Freq"   
