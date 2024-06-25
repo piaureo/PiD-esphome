@@ -1,3 +1,13 @@
+![TENGO QUE HACER TODO YO CHUPENLO MALDITOS NO SE PROGRAMAR SON LA MIERDA DEL MUNDO AYUDAME A AYUDARTE](https://i.postimg.cc/4GDD0xc8/82-archivo-texto-plano-www-piaureo-com-www-aiaureo-com-www-diaureo-com-www-pieureo-com-01.png)
+
+![TENGO QUE HACER TODO YO CHUPENLO MALDITOS NO SE PROGRAMAR SON LA MIERDA DEL MUNDO AYUDAME A AYUDARTE](https://i.postimg.cc/Wj0Bcc6s/Sin-t-tulo.png)
+
+![TENGO QUE HACER TODO YO CHUPENLO MALDITOS NO SE PROGRAMAR SON LA MIERDA DEL MUNDO AYUDAME A AYUDARTE](https://i.postimg.cc/hPyCssFt/www-pieureo-com-www-aiaureo-com-www-diaureo-com-www-piaureo-com.png)
+
+
+![TENGO QUE HACER TODO YO CHUPENLO MALDITOS NO SE PROGRAMAR SON LA MIERDA DEL MUNDO AYUDAME A AYUDARTE](https://i.postimg.cc/8NHxsd03/www-pieureo-com-www-aiaureo-com-www-diaureo-com-www-piaureo-com-www-pidchile-com.png)
+
+
 ![TENGO QUE HACER TODO YO CHUPENLO MALDITOS NO SE PROGRAMAR SON LA MIERDA DEL MUNDO AYUDAME A AYUDARTE](https://raw.githubusercontent.com/piaureo/PiD-esphome/main/Funcion%20Lineal.png)
 
 ![TENGO QUE HACER TODO YO CHUPENLO MALDITOS NO SE PROGRAMAR SON LA MIERDA DEL MUNDO AYUDAME A AYUDARTE](https://i.postimg.cc/PNs5V3XF/como-crear-una-empresa-desde-cero-1.png)
