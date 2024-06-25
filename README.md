@@ -12,6 +12,10 @@
 
 ![TENGO QUE HACER TODO YO CHUPENLO MALDITOS NO SE PROGRAMAR SON LA MIERDA DEL MUNDO AYUDAME A AYUDARTE](https://i.postimg.cc/PNs5V3XF/como-crear-una-empresa-desde-cero-1.png)
 
+
+![TENGO QUE HACER TODO YO CHUPENLO MALDITOS NO SE PROGRAMAR SON LA MIERDA DEL MUNDO AYUDAME A AYUDARTE](https://aiaureo.com/wp-content/uploads/2023/11/Educacionn_ECONOMIA-PiD-Funcion-de-Transferencia-Estanques-con-Dinero-Jubilaciones-AFP-IVA-FONASA_piaureo.com_aiaureo.com_diaureo.com_andnitro_donate_rut_16299830-700.png)
+
+
 ![TENGO QUE HACER TODO YO CHUPENLO MALDITOS NO SE PROGRAMAR SON LA MIERDA DEL MUNDO AYUDAME A AYUDARTE](https://aiaureo.com/wp-content/uploads/2023/11/Educacionn_ECONOMIA-PiD-Funcion-de-Transferencia-Estanques-con-Dinero-Jubilaciones-AFP-IVA-FONASA_piaureo.com_aiaureo.com_diaureo.com_andnitro_donate_rut_16299830-712.png)
 
 ![TENGO QUE HACER TODO YO CHUPENLO MALDITOS NO SE PROGRAMAR SON LA MIERDA DEL MUNDO AYUDAME A AYUDARTE](https://aiaureo.com/wp-content/uploads/2023/11/Educacionn_ECONOMIA-PiD-Funcion-de-Transferencia-Estanques-con-Dinero-Jubilaciones-AFP-IVA-FONASA_piaureo.com_aiaureo.com_diaureo.com_andnitro_donate_rut_16299830-713.jpg)
