@@ -92,7 +92,7 @@ https://mega.nz/file/Sh5BEaAC#rJjfI3MPJ08HnvIYu4wOs2WsJEcBFGWXiiO14ZecJ9Q
 
 ![TENGO QUE  NO SE PROGRAMAR MUNDO AYUDAME A AYUDARTE](https://i.postimg.cc/VzxPNhkJ/animales-carnivoros-ejemplos-Artificial-intelligence-piaureo-com-aiaureo-com-diaureo-com-alan-fechas.jpg)
 
-![TENGO QUE  NO SE PROGRAMAR MUNDO AYUDAME A AYUDARTE](https://i.postimg.cc/VzxPNhkJ/animales-carnivoros-ejemplos-Artificial-intelligence-piaureo-com-aiaureo-com-diaureo-com-alan-fechas.jpg)
+![TENGO QUE  NO SE PROGRAMAR MUNDO AYUDAME A AYUDARTE](https://i.postimg.cc/SqxS3w24/82-archivo-texto-plano-www-piaureo-com-www-aiaureo-com-www-diaureo-com-www-pieureo-com-01.png)
 
 ![TENGO QUE  NO SE PROGRAMAR MUNDO AYUDAME A AYUDARTE]()
 
