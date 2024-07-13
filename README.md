@@ -68,7 +68,33 @@
 https://mega.nz/file/Sh5BEaAC#rJjfI3MPJ08HnvIYu4wOs2WsJEcBFGWXiiO14ZecJ9Q
 
 
+![TENGO QUE  NO SE PROGRAMAR MUNDO AYUDAME A AYUDARTE](https://i.postimg.cc/d3svNhDH/Educacionn-ECONOMIA-Pi-D-Funcion-de-Transferencia-Estanques-con-Dinero-Jubilaciones-AFP-IVA-FONASA-pi.png)
 
+![TENGO QUE  NO SE PROGRAMAR MUNDO AYUDAME A AYUDARTE](https://i.postimg.cc/L8MDcjm8/Educacionn-ECONOMIA-Pi-D-Funcion-de-Transferencia-Estanques-c.png)
+
+![TENGO QUE  NO SE PROGRAMAR MUNDO AYUDAME A AYUDARTE](https://i.postimg.cc/fz039px1/99-pwww-pidchile-com-piaureo-com-aiaureo-com-diaureo-com-00.png)
+
+![TENGO QUE  NO SE PROGRAMAR MUNDO AYUDAME A AYUDARTE](https://i.postimg.cc/zq1kXS1J/99-Internet-Condominio-Gratis99-www-piaureo-com-www-aiaureo-com-www-diaureo-com-www-pieureo-com-GRAT.png)
+
+![TENGO QUE  NO SE PROGRAMAR MUNDO AYUDAME A AYUDARTE](https://i.postimg.cc/gjgpCGZY/Educacionn-ECONOMIA-Pi-D-Funcion-de-Transferencia-Estanques-con-Dinero-Jubilaciones-AFP-IVA-FONASA-pi.jpg)
+
+![TENGO QUE  NO SE PROGRAMAR MUNDO AYUDAME A AYUDARTE](https://i.postimg.cc/Nj3tqJ5r/Educacionn-ECONOMIA-Pi-D-Funcion-de-Transferencia-Estanques-con-Dinero-Jubilaciones-AFP-IVA-FONASA-pi.jpg)
+
+![TENGO QUE  NO SE PROGRAMAR MUNDO AYUDAME A AYUDARTE](https://i.postimg.cc/fDMLzJgG/Educacionn-ECONOMIA-Pi-D-Funcion-de-Transferencia-Estanques-con-Dinero-Jubilaciones-AFP-IVA-FONASA-pi.jpg)
+
+![TENGO QUE  NO SE PROGRAMAR MUNDO AYUDAME A AYUDARTE](https://i.postimg.cc/gjgpCGZY/Educacionn-ECONOMIA-Pi-D-Funcion-de-Transferencia-Estanques-con-Dinero-Jubilaciones-AFP-IVA-FONASA-pi.jpg)
+
+![TENGO QUE  NO SE PROGRAMAR MUNDO AYUDAME A AYUDARTE](https://i.postimg.cc/d3svNhDH/Educacionn-ECONOMIA-Pi-D-Funcion-de-Transferencia-Estanques-con-Dinero-Jubilaciones-AFP-IVA-FONASA-pi.png)
+
+![TENGO QUE  NO SE PROGRAMAR MUNDO AYUDAME A AYUDARTE](https://i.postimg.cc/6QJk18mr/24-horas.jpg)
+
+![TENGO QUE  NO SE PROGRAMAR MUNDO AYUDAME A AYUDARTE](https://i.postimg.cc/sjyFYZSy/LO-COMIDO-Y-DISFRUTADO-NO-LO-QUITA-NADIE.png)
+
+![TENGO QUE  NO SE PROGRAMAR MUNDO AYUDAME A AYUDARTE](https://i.postimg.cc/VzxPNhkJ/animales-carnivoros-ejemplos-Artificial-intelligence-piaureo-com-aiaureo-com-diaureo-com-alan-fechas.jpg)
+
+![TENGO QUE  NO SE PROGRAMAR MUNDO AYUDAME A AYUDARTE](https://i.postimg.cc/VzxPNhkJ/animales-carnivoros-ejemplos-Artificial-intelligence-piaureo-com-aiaureo-com-diaureo-com-alan-fechas.jpg)
+
+![TENGO QUE  NO SE PROGRAMAR MUNDO AYUDAME A AYUDARTE]()
 
 
 
